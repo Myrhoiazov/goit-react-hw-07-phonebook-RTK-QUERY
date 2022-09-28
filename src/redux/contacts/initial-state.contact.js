@@ -1,9 +1,9 @@
-const initialContact = {
-  isLoading: false,
-  contacts: [],
-  filter: '',
-  error: null,
-}
+// const initialContact = {
+//   isLoading: false,
+//   contacts: [],
+//   filter: '',
+//   error: null,
+// }
 
 
-export default initialContact;
+// export default initialContact;

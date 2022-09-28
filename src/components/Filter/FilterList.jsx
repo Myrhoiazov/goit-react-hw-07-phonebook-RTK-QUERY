@@ -1,22 +1,25 @@
+import { useGetAllContactsQuery } from 'redux/contacts/rtk-Query';
 import s from '../Filter/Filter.module.css';
+import { selectFilter } from 'redux/contacts/selector-contacts';
 // import PropTypes from 'prop-types';
+import Loader from 'components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFilter } from 'redux/contacts/contact-Slice';
-import { selectContact } from 'redux/contacts/selector-contacts';
-import Loader from 'components/Loader';
 
 const FilterList = () => {
-  const contacts = useSelector(selectContact);
-  const filter = useSelector(state => state.contacts.filter);
-  const isLoading = useSelector(state => state.contacts.isLoading);
+  const filter = useSelector(selectFilter);
+  console.log(filter);
   const dispatch = useDispatch();
+
+  const { data, isLoading } = useGetAllContactsQuery();
+  console.log(data);
 
   const handleFilterValue = ev => {
     dispatch(setFilter(ev.target.value.trim()));
   };
 
-  if (contacts.length === 0) {
-    return;
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (

@@ -1,38 +1,35 @@
-// import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import s from '../Contacts/ContactList.module.css';
-import { useEffect } from 'react';
-import { fetchAllContact } from '../../redux/contacts/operations-contact';
-import { selectContact } from 'redux/contacts/selector-contacts';
-import { deleteContact } from '../../redux/contacts/operations-contact';
 import Loader from 'components/Loader';
+import {
+  useGetAllContactsQuery,
+  useDeleteContactMutation,
+} from 'redux/contacts/rtk-Query';
+import { useSelector } from 'react-redux';
+import { selectFilter } from 'redux/contacts/selector-contacts';
 
 const ContactList = () => {
-  const contacts = useSelector(selectContact);
-  const filter = useSelector(state => state.contacts.filter);
-  const isLoading = useSelector(state => state.contacts.isLoading)
-  const dispatch = useDispatch();
+  const filter = useSelector(selectFilter);
 
+  const { data, isLoading } = useGetAllContactsQuery();
+  const [deleteContact] = useDeleteContactMutation();
 
-
-  useEffect(() => {
-    dispatch(fetchAllContact());
-    // eslint-disable-next-line
-  }, []);
-
-  const filteredContacts = contacts.filter(user =>
-    user.name.toLowerCase().includes(filter.toLowerCase())
-  );
-  
-  if (contacts.length === 0) {
+  if (!data) {
     return;
   }
 
+  // if (!filter) {
+  //   return;
+  // }
+
+  const filterUsers = data.filter(user =>
+    user.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div>
-      {isLoading && <Loader/>}
+      {isLoading && <Loader />}
       <ul className={s.list}>
-        {filteredContacts.map(({ name, number, id }) => (
+        {filterUsers.map(({ name, number, id }) => (
           <li className={s.item} key={id}>
             <p className={s.text}>
               {name} <span className={s.tel}>Tel: {number}</span>
@@ -40,7 +37,7 @@ const ContactList = () => {
             <button
               className={s.btn}
               type="button"
-              onClick={() => dispatch(deleteContact(id))}
+              onClick={() => deleteContact(id)}
             >
               Delete
             </button>

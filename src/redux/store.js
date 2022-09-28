@@ -7,11 +7,12 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import { contactsReducer } from './contacts/contact-Slice';
-
+import { filterReducer } from './contacts/contact-Slice';
+import { contactApi } from './contacts/rtk-Query';
 
 const rootReducer = combineReducers({
-  contacts: contactsReducer,
+  filter: filterReducer,
+  [contactApi.reducerPath]: contactApi.reducer,
 });
 
 export const store = configureStore({
@@ -21,5 +22,5 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat([contactApi.middleware]),
 });

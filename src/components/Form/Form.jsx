@@ -1,19 +1,18 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contacts/operations-contact';
+import {
+  useCreateContactMutation,
+  useGetAllContactsQuery,
+} from 'redux/contacts/rtk-Query';
 import s from './Form.module.css';
 import { toast } from 'react-toastify';
-import { selectContact } from 'redux/contacts/selector-contacts';
 import Loader from 'components/Loader';
-
-// const shortid = require('shortid');
 
 const Form = () => {
   const [name, setUserName] = useState('');
   const [number, setNumber] = useState('');
-  const dispatch = useDispatch();
-  const contacts = useSelector(selectContact);
-  const isLoading = useSelector(state => state.contacts.isLoading);
+
+  const [createContact, { isLoading }] = useCreateContactMutation();
+  const { data } = useGetAllContactsQuery();
 
   const handleChangeUser = ev => {
     const { name, value } = ev.target;
@@ -37,14 +36,14 @@ const Form = () => {
   const handleAddUser = e => {
     e.preventDefault();
 
-    const hasUserContacts = contacts.some(user => user.name === name);
-
+    const hasUserContacts = data.some(user => user.name === name);
+    
     if (hasUserContacts) {
       toast.error(`${name} is already in contacts`);
       return;
     }
 
-    dispatch(addContact({ name, number }));
+    createContact({ name, number });
     setNumber('');
     setUserName('');
   };
