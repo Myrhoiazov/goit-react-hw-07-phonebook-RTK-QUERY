@@ -43,7 +43,7 @@ const ContactList = () => {
               type="button"
               onClick={() => handleDeleteContact(id)}
             >
-              Delete
+              {deleteLoading ? 'Waiting...' : 'Delete'}
             </button>
           </li>
         ))}
