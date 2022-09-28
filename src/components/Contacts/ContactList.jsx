@@ -6,24 +6,27 @@ import {
 } from 'redux/contacts/rtk-Query';
 import { useSelector } from 'react-redux';
 import { selectFilter } from 'redux/contacts/selector-contacts';
+import { toast } from 'react-toastify';
 
 const ContactList = () => {
   const filter = useSelector(selectFilter);
 
   const { data, isLoading } = useGetAllContactsQuery();
-  const [deleteContact] = useDeleteContactMutation();
+  const [deleteContact, { isLoading: deleteLoading }] =
+    useDeleteContactMutation();
 
   if (!data) {
     return;
   }
 
-  // if (!filter) {
-  //   return;
-  // }
-
   const filterUsers = data.filter(user =>
     user.name.toLowerCase().includes(filter.toLowerCase())
   );
+
+  const handleDeleteContact = async id => {
+    await deleteContact(id);
+    toast.warning('contact deleted...');
+  };
 
   return (
     <div>
@@ -35,9 +38,10 @@ const ContactList = () => {
               {name} <span className={s.tel}>Tel: {number}</span>
             </p>
             <button
+              disabled={deleteLoading}
               className={s.btn}
               type="button"
-              onClick={() => deleteContact(id)}
+              onClick={() => handleDeleteContact(id)}
             >
               Delete
             </button>

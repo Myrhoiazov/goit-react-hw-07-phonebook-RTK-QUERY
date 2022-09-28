@@ -8,18 +8,21 @@ import { setFilter } from 'redux/contacts/contact-Slice';
 
 const FilterList = () => {
   const filter = useSelector(selectFilter);
-  console.log(filter);
   const dispatch = useDispatch();
 
   const { data, isLoading } = useGetAllContactsQuery();
-  console.log(data);
 
   const handleFilterValue = ev => {
     dispatch(setFilter(ev.target.value.trim()));
   };
 
-  if (isLoading) {
-    return <Loader />;
+
+  if (!data) {
+    return;
+  }
+
+  if (data.length <= 0) {
+    return;
   }
 
   return (
